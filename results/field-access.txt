@@ -1,9 +1,9 @@
 Benchmark                                                    Mode  Cnt   Score   Error  Units
 FieldAccessBenchmark.noOpZero                                avgt    5   3.735 ± 0.101  ms/op
-FieldAccessBenchmark.usingGetterAndSetter                    avgt    5  11.811 ± 0.247  ms/op
+FieldAccessBenchmark.usingGetterAndSetter                    avgt    5  11.811 ± 0.247  ms/op - 1X
 FieldAccessBenchmark.publicFieldDirectAccess                 avgt    5  11.833 ± 0.101  ms/op
 FieldAccessBenchmark.usingNativeReflection                   avgt    5  17.698 ± 0.554  ms/op
-FieldAccessBenchmark.usingDiamondReflection                  avgt    5  20.148 ± 2.013  ms/op
+FieldAccessBenchmark.usingDiamondReflection                  avgt    5  20.148 ± 2.013  ms/op - 1.7X
 FieldAccessBenchmark.invokingInexactMethodHandles            avgt    5  51.361 ± 1.067  ms/op
 FieldAccessBenchmark.invokingExactMethodHandles              avgt    5  53.207 ± 2.644  ms/op
 FieldAccessBenchmark.invokingExactUnreflectedMethodHandles   avgt    5  53.774 ± 1.572  ms/op

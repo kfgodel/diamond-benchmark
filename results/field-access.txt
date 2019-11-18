@@ -1,0 +1,9 @@
+Benchmark                                                    Mode  Cnt       Score       Error   Units
+FieldAccessBenchmark.invokingExactMethodHandles             thrpt    5   23170.169 ±   473.356  ops/ms
+FieldAccessBenchmark.invokingExactUnreflectedMethodHandles  thrpt    5   23355.418 ±   400.242  ops/ms
+FieldAccessBenchmark.invokingInexactMethodHandles           thrpt    5   23667.044 ±   712.321  ops/ms
+FieldAccessBenchmark.noOpZero                               thrpt    5  268407.538 ±  4094.632  ops/ms
+FieldAccessBenchmark.publicFieldDirectAccess                thrpt    5  276277.995 ±  4476.471  ops/ms
+FieldAccessBenchmark.usingDiamondReflection                 thrpt    5   92769.817 ± 25672.546  ops/ms
+FieldAccessBenchmark.usingGetterAndSetter                   thrpt    5  271946.606 ±  4670.237  ops/ms
+FieldAccessBenchmark.usingNativeReflection                  thrpt    5  110510.488 ± 10267.031  ops/ms

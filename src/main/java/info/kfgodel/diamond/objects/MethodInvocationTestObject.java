@@ -1,4 +1,4 @@
-package ar.com.kfgodel.diamond.unit.testobjects.accessors;
+package info.kfgodel.diamond.objects;
 
 /**
  * This type serves for testing method invocations

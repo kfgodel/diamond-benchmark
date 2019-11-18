@@ -1,0 +1,8 @@
+Benchmark                                                     Mode  Cnt       Score       Error   Units
+MethodAccessBenchmark.directMethodAccess                     thrpt    5   79892.403 ± 16098.860  ops/ms
+MethodAccessBenchmark.invokingExactMethodHandles             thrpt    5   11153.364 ±   475.285  ops/ms
+MethodAccessBenchmark.invokingExactUnreflectedMethodHandles  thrpt    5   11213.804 ±   266.039  ops/ms
+MethodAccessBenchmark.invokingInexactMethodHandles           thrpt    5   11180.109 ±   553.655  ops/ms
+MethodAccessBenchmark.noOpZero                               thrpt    5  266187.543 ±  4537.475  ops/ms
+MethodAccessBenchmark.usingDiamondReflection                 thrpt    5   10051.499 ±   209.195  ops/ms
+MethodAccessBenchmark.usingNativeReflection                  thrpt    5   18204.026 ±   540.350  ops/ms

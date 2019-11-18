@@ -4,6 +4,7 @@ import ar.com.kfgodel.diamond.api.Diamond;
 import ar.com.kfgodel.diamond.api.fields.TypeField;
 import info.kfgodel.diamond.objects.FieldAccessorTestObject;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
@@ -44,61 +45,70 @@ public class FieldAccessBenchmark {
   }
 
   @Benchmark
-  public void publicFieldDirectAccess() {
-    object.publicField = object.publicField + 2;
+  public int publicFieldDirectAccess() {
+    return object.publicField = object.publicField + 2;
   }
 
   @Benchmark
-  public void usingGetterAndSetter() {
-    object.setPublicField(object.getPublicField() + 2);
+  public int usingGetterAndSetter() {
+    return object.setPublicField(object.getPublicField() + 2);
   }
 
   @Benchmark
-  public void invokingInexactMethodHandles() {
+  public Object invokingInexactMethodHandles() {
     try {
-      setterHandle.invoke(object, (int) getterHandle.invoke(object) + 2);
+      return setterHandle.invoke(object, (int) getterHandle.invoke(object) + 2);
     } catch (Throwable e) {
       throw new RuntimeException("Unexpected test error", e);
     }
   }
 
   @Benchmark
-  public void invokingExactMethodHandles() {
+  public Object invokingExactMethodHandles() {
     try {
-      setterHandle.invokeExact(object, (int) getterHandle.invokeExact(object) + 2);
+      final int value = (int) getterHandle.invokeExact(object) + 2;
+      setterHandle.invokeExact(object, value);
+      return value;
     } catch (Throwable e) {
       throw new RuntimeException("Unexpected test error", e);
     }
   }
 
   @Benchmark
-  public void invokingExactUnreflectedMethodHandles() {
+  public Object invokingExactUnreflectedMethodHandles() {
     try {
-      unreflectedSetter.invokeExact(object, (int) unreflectedGetter.invokeExact(object) + 2);
+      final int value = (int) unreflectedGetter.invokeExact(object) + 2;
+      unreflectedSetter.invokeExact(object, value);
+      return value;
     } catch (Throwable e) {
       throw new RuntimeException("Unexpected test error", e);
     }
   }
 
   @Benchmark
-  public void usingNativeReflection() {
+  public int usingNativeReflection() {
     try {
-      field.set(object, (Integer) field.get(object) + 2);
+      final int value = (Integer) field.get(object) + 2;
+      field.set(object, value);
+      return value;
     } catch (IllegalAccessException e) {
       throw new RuntimeException("Unexpected test error", e);
     }
   }
 
   @Benchmark
-  public void usingDiamondReflection() {
-    diamondField.setValueOn(object, diamondField.<Integer>getValueFrom(object) + 2);
+  public int usingDiamondReflection() {
+    final int value = diamondField.<Integer>getValueFrom(object) + 2;
+    diamondField.setValueOn(object, value);
+    return value;
   }
 
   @Benchmark
-  public void usingConvertedUnreflectedMethodHandles() {
+  public Object usingConvertedUnreflectedMethodHandles() {
     try {
-      Object i = (Integer) convertedGetter.invokeExact(object) + 2;
-      convertedSetter.invokeExact(object, i);
+      Object i = (Integer) convertedGetter.invokeExact((Object)object) + 2;
+      convertedSetter.invokeExact((Object)object, i);
+      return i;
     } catch (Throwable e) {
       throw new RuntimeException("Unexpected test error", e);
     }
@@ -152,11 +162,14 @@ public class FieldAccessBenchmark {
   public static void main(String[] args) throws RunnerException {
     Options opt = new OptionsBuilder()
       .include(FieldAccessBenchmark.class.getSimpleName())
+      .mode(Mode.AverageTime)
       .timeUnit(TimeUnit.MILLISECONDS)
-      .warmupIterations(5)
+      .warmupIterations(10)
       .warmupTime(TimeValue.seconds(1))
+      .warmupBatchSize(1_000_000)
       .measurementIterations(5)
-      .measurementTime(TimeValue.seconds(3))
+      .measurementBatchSize(1_000_000)
+      .measurementTime(TimeValue.seconds(5))
       .forks(1)
       .build();
     new Runner(opt).run();

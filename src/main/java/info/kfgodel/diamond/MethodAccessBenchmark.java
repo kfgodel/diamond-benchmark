@@ -5,6 +5,7 @@ import ar.com.kfgodel.diamond.api.methods.TypeMethod;
 import info.kfgodel.diamond.objects.FieldAccessorTestObject;
 import info.kfgodel.diamond.objects.MethodInvocationTestObject;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
@@ -39,10 +40,10 @@ public class MethodAccessBenchmark {
   private final MethodHandle unreflectedMethodC = unreflect(nativeMethodC);
   private final MethodHandle unreflectedMethodD = unreflect(nativeMethodD);
 
-  private final MethodHandle convertedMethodA = convertUnreflected(unreflectedMethodA);
-  private final MethodHandle convertedMethodB = convertUnreflected(unreflectedMethodB);
-  private final MethodHandle convertedMethodC = convertUnreflected(unreflectedMethodC);
-  private final MethodHandle convertedMethodD = convertUnreflected(unreflectedMethodD);
+  private final MethodHandle convertedMethodA = convertUnreflected(unreflectedMethodA, Object.class);
+  private final MethodHandle convertedMethodB = convertUnreflected(unreflectedMethodB, Object.class);
+  private final MethodHandle convertedMethodC = convertUnreflected(unreflectedMethodC, Object.class);
+  private final MethodHandle convertedMethodD = convertUnreflected(unreflectedMethodD, Object.class);
 
   private final MethodHandle methodAHandle = getHandle("methodA", MethodInvocationTestObject.class);
   private final MethodHandle methodBHandle = getHandle("methodB",MethodInvocationTestObject.class);
@@ -67,7 +68,7 @@ public class MethodAccessBenchmark {
   @Benchmark
   public int usingConvertedUnreflectedMethodHandles() {
     try {
-      Object resultA = convertedMethodA.invokeExact(object);
+      Object resultA = convertedMethodA.invokeExact((Object)object);
       Object resultB = convertedMethodB.invokeExact(resultA);
       Object resultC = convertedMethodC.invokeExact(resultB);
       Object resultD = convertedMethodD.invokeExact(resultC);
@@ -160,8 +161,8 @@ public class MethodAccessBenchmark {
     }
   }
 
-  private MethodHandle convertUnreflected(MethodHandle methodhandle) {
-    return methodhandle.asType(MethodType.methodType(Object.class, Object.class));
+  private MethodHandle convertUnreflected(MethodHandle methodhandle, Class<?> instanceType) {
+    return methodhandle.asType(MethodType.methodType(Object.class, instanceType));
   }
 
   private MethodHandle unreflect(Method reflectedMethod) {
@@ -189,11 +190,14 @@ public class MethodAccessBenchmark {
   public static void main(String[] args) throws RunnerException {
     Options opt = new OptionsBuilder()
       .include(MethodAccessBenchmark.class.getSimpleName())
+      .mode(Mode.AverageTime)
       .timeUnit(TimeUnit.MILLISECONDS)
-      .warmupIterations(5)
+      .warmupIterations(10)
       .warmupTime(TimeValue.seconds(1))
+      .warmupBatchSize(1_000_000)
       .measurementIterations(5)
-      .measurementTime(TimeValue.seconds(3))
+      .measurementBatchSize(1_000_000)
+      .measurementTime(TimeValue.seconds(5))
       .forks(1)
       .build();
     new Runner(opt).run();

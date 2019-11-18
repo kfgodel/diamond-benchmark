@@ -23,7 +23,8 @@ public class FieldAccessorTestObject {
     return publicField;
   }
 
-  public void setPublicField(int publicField) {
+  public int setPublicField(int publicField) {
     this.publicField = publicField;
+    return this.publicField;
   }
 }

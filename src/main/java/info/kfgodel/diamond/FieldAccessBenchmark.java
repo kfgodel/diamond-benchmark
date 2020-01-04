@@ -36,7 +36,7 @@ public class FieldAccessBenchmark {
   private final MethodHandle convertedGetter = unreflectedGetter.asType(MethodType.methodType(Integer.class, Object.class));
   private final MethodHandle convertedSetter = unreflectedSetter.asType(MethodType.methodType(void.class, Object.class, Object.class));
 
-  private final TypeField diamondField = Diamond.of(FieldAccessorTestObject.class).fields().named(FIELD_NAME).asUni().get();
+  private final TypeField diamondField = Diamond.of(FieldAccessorTestObject.class).fields().named(FIELD_NAME).unique().get();
 
 
   @Benchmark

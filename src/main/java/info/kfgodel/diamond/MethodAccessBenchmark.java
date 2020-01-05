@@ -182,7 +182,9 @@ public class MethodAccessBenchmark {
   }
 
   private TypeMethod diamondOf(String methodA) {
-    return Diamond.of(MethodInvocationTestObject.class).methods().named(methodA).unique().get();
+    return Diamond.of(MethodInvocationTestObject.class)
+      .methods().named(methodA)
+      .unique().get();
   }
 
   //------
